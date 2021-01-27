@@ -1,6 +1,6 @@
 *) Meshing of a specific test-case geometry.
 
-A vertical solid rectangular plate is immersed in a box of fluid, joined at the base level. 
+A vertical solid rectangular plate is immersed in a box of fluid, joined at the base level.
 The plate's height can be smaller, equal or larger than the fluid's.
 
 Meshing is done using block elements. 
@@ -18,5 +18,6 @@ and for the whole fluid-structure interface.
 The fluid domain's outer dimensions are 1m in length, 0.5m in width and height.
 The solid domain is roughly 0.1m, 0.3m and 0.67m in those directions, respectively.
 
-sample_mesh_8.png  : 540 elements for the solid domain, 6120 elements for the fluid domain, 7880 nodes.
-sample_mesh_20.png : 540 elements for the solid domain, 6120 elements for the fluid domain, 30234 nodes. Extra nodes per element are represented with extra lines forming subtriangles on each face.
+- sample_mesh_8.png  : 540 elements for the solid domain, 6120 elements for the fluid domain, 7880 nodes.
+
+- sample_mesh_20.png : 540 elements for the solid domain, 6120 elements for the fluid domain, 30234 nodes. Extra nodes per element are represented with extra lines forming subtriangles on each face.
