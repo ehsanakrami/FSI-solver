@@ -13,6 +13,7 @@ The equations are solved in time using a Newmark scheme, during which the nonlin
 This code aims to solve 3D fluid-structure interaction problems consisting of the following coupled equations:
 - Large Deformations Elasticity in the solid domain: the materials are assumed to be isotropic and follow a St Venant-Kirchhoff constitutive equation;
 - Incompressible Navier-Stokes in the fluid domain: we assume a Newtonian incompressible fluid.
+
 The equations are written using an Arbitrary Lagrangian-Eulerian formulation, and the system is closed by continuity equations for velocity at the interface between fluid and solid, as well as boundary and initial conditions.
 A basic method for moving the ALE mesh during the time stepping in order to follow the movement of the interface is implemented. The new mesh is obtained as the solution of an elastic problem defined by displacement boundary conditions assuring that the interface is properly tracked. Thus, distortion is controlled by a pair of elastic coefficients.
 
