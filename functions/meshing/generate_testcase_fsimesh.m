@@ -1,4 +1,4 @@
-function fsimesh = generate_testcase_fsimesh(Lx,Ly,Lz,Nx,Ny,Nz,Ne_beam_x,Ne_beam_y,Ne_beam_z,idisp,isave)
+function fsimesh = generate_testcase_fsimesh(Lx,Ly,Lz,Nx,Ny,Nz,Ne_beam_x,Ne_beam_y,Ne_beam_z,isave)
 
 Ne_x = Nx-1 ;
 Ne_y = Ny-1 ;
@@ -965,15 +965,6 @@ fsimesh.T_E_fsi = T_E_fsi ;
 fsimesh.T_DOF_volume = T_DOF_volume ;
 fsimesh.T_DOF_surface = T_DOF_surface ;
 fsimesh.T_DOF_fsi = T_DOF_fsi ;
-
-% Mesh display
-
-if idisp == 1
-    
-    dispmesh_hexa8(T_E_beam_8,T_X{1},'m',1)
-    dispmesh_hexa8(T_E_fluid_8,T_X{1},'c',1)
-    
-end
 
 % Save
 
