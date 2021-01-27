@@ -18,6 +18,13 @@ and for the whole fluid-structure interface.
 The fluid domain's outer dimensions are 1m in length, 0.5m in width and height.
 The solid domain is roughly 0.1m, 0.3m and 0.67m in those directions, respectively.
 
-- sample_mesh_8.png  : 540 elements for the solid domain, 6120 elements for the fluid domain, 7880 nodes.
+- 8-node blocks sample mesh: 540 elements for the solid domain, 6120 elements for the fluid domain, 7880 nodes.
 
-- sample_mesh_20.png : 540 elements for the solid domain, 6120 elements for the fluid domain, 30234 nodes. Extra nodes per element are represented with extra lines forming subtriangles on each face.
+![8-node blocks sample mesh][figure1]
+
+- 20-node blocks sample mesh: 540 elements for the solid domain, 6120 elements for the fluid domain, 30234 nodes. Extra nodes per element are represented with extra lines forming subtriangles on each face.
+
+![20-node blocks sample mesh][figure2]
+
+[figure1]: https://github.com/rcapillon/FSI-solver/blob/main/functions/meshing/sample_mesh_8.png "8-node blocks sample mesh"
+[figure2]: https://github.com/rcapillon/FSI-solver/blob/main/functions/meshing/sample_mesh_20.png "20-node blocks sample mesh"
