@@ -1,4 +1,4 @@
-*) Meshing of a specific test-case geometry.
+# Meshing of a specific test-case geometry.
 
 A vertical solid rectangular plate is immersed in a box of fluid, joined at the base level.
 The plate's height can be smaller, equal or larger than the fluid's.
@@ -13,7 +13,7 @@ Connectivity tables are available, for both the 8-node and the 20-node meshes, f
 2D connectivity tables (4-node and 8-node rectangular surface elements) are available for each face of the solid and fluid domains,
 and for the whole fluid-structure interface.
 
-*) Sample figures
+# Sample figures
 
 The fluid domain's outer dimensions are 1m in length, 0.5m in width and height.
 The solid domain is roughly 0.1m, 0.3m and 0.67m in those directions, respectively.
