@@ -1,5 +1,24 @@
 function fsimesh = generate_testcase_fsimesh(Lx,Ly,Lz,Nx,Ny,Nz,Ne_beam_x,Ne_beam_y,Ne_beam_z,isave)
 
+% Computes a test-case mesh, both with 8-node and 20-node blocks.
+%
+% Inputs: 
+% - Lx,Ly,Lz: Dimensions of the box (in meters) where the fluid and part of the solid domains will fit
+% - Nx,Ny,Nz: Number of nodes in each direction for that box.
+% - Ne_beam_x,Ne_beam_y,Ne_beam_z: Number of elements in the solid domain in each direction
+% - isave: If it is equal to 1, the mesh will be saved in a .mat file.
+%
+% Output:
+% - fsimesh: structure containing the following fields:
+%   - T_X: a (2,1)-cell containing the Nx3 node coordinates for the 8-node and 20-node meshes
+%   - nodelist: a (2,2)-cell containing lists of the nodes in the solid and fluid domains (rows) for both meshes (columns)
+%   - T_E_volume: a (2,2)-cell containing connectivity tables for the solid and fluid domains (rows) for both meshes (columns)
+%   - T_E_surface: a (2,1)-cell containing cells for the solid and fluid domains. Each cell is (6,2) containing 2D connectivity tables for each outer face of the domain (rows) for each mesh (columns). 
+%   - T_E_fsi: a (2,1)-cell containing 2D connectivity tables for the fluid-structure interface
+%   - T_DOF_volume,T_DOF_surface,T_DOF_fsi: similar to the connectivity tables, but written in terms of numbers of degrees of freedom assuming 3 degrees of freedom per node
+
+% Number of elements and nodes
+
 Ne_x = Nx-1 ;
 Ne_y = Ny-1 ;
 Ne_z = Nz-1 ;
@@ -14,6 +33,8 @@ Nnodes_middle = Nnodes_line_middle * (Ne_y+1) * Ne_z + Nnodes_line_middle * Ne_y
 Nnodes = Nnodes_edgex + Nnodes_middle ; 
 
 Nnodes_corner = (Ne_x+1)*(Ne_y+1)*(Ne_z+1) ;
+
+% Dimensions of elements
 
 Le = Lx/Ne_x ; % Length of an element
 We = Ly/Ne_y  ; % Width of an element
@@ -55,6 +76,7 @@ He = Lz/Ne_z ; % Height of an element
 % on the middle of edges of direction y , then nodes on the middle of edges
 % of direction z
 
+% Connectivity table  and node coordinates for the box
 
 T_E_20 = zeros(Ne,20) ;
 
@@ -138,7 +160,7 @@ end
 
 Ne3D = size(T_E_20,1) ;
 
-%%%
+% Identifying elements in the box belonging to the solid domain
 
 Lbeam_x = Ne_beam_x*Le ;
 Lbeam_y = Ne_beam_y*We ;
@@ -162,11 +184,15 @@ for ii = 1:size(T_E_8,1)
     
 end
 
+% Connectivity tables for the solid and fluid domains
+
 T_E_beam_8 = T_E_8(ls_beam_elts,:) ;
 T_E_beam_20 = T_E_20(ls_beam_elts,:) ;
 
 T_E_fluid_8 = T_E_8(setdiff(1:Ne3D,ls_beam_elts),:) ;
 T_E_fluid_20 = T_E_20(setdiff(1:Ne3D,ls_beam_elts),:) ;
+
+% 2D connectivity table of the fluid-structure interface
 
 T_E_fsi_8 = [] ;
 T_E_fsi_20 = [] ;
@@ -224,7 +250,8 @@ T_E_fsi = cell(1,2) ;
 T_E_fsi{1,1} = T_E_fsi_8 ;
 T_E_fsi{1,2} = T_E_fsi_20 ;
 
-%%%
+% Adding elements for the solid domain in the vertical direction if the
+% structure's height is greater than the fluid domain's height.
 
 Ne_beam_out_z = Ne_beam_z - (Nz-1) ;
 
@@ -395,20 +422,23 @@ if Ne_beam_out_z > 0
     
 end
 
+% Final 3D connectivity tables
+
 T_E_volume = cell(2,2) ;
 T_E_volume{1,1} = T_E_beam_8 ;
 T_E_volume{1,2} = T_E_beam_20 ;
 T_E_volume{2,1} = T_E_fluid_8 ;
 T_E_volume{2,2} = T_E_fluid_20 ;
 
-%%%
+% Coordinates are centered, with respect to the x- and y-directions, on the
+% center of the box
 
 T_X_20(:,1) = T_X_20(:,1) - Lx/2 ;
 T_X_20(:,2) = T_X_20(:,2) - Ly/2 ;
 T_X_8(:,1) = T_X_8(:,1) - Lx/2 ;
 T_X_8(:,2) = T_X_8(:,2) - Ly/2 ;
 
-%%%
+% 2D connectivity tables for the 6 outer faces of the fluid domain
 
 ls_face1_8 = find(T_X_8(:,1)==0) ;
 ls_face2_8 = find(T_X_8(:,1)==Lx) ;
@@ -626,7 +656,7 @@ T_E_fluid_faces{5,2} = T_E_fluid_face5_20 ;
 T_E_fluid_faces{6,1} = T_E_fluid_face6_8 ;
 T_E_fluid_faces{6,2} = T_E_fluid_face6_20 ;
 
-%%%
+% Tables of degrees of freedom
 
 T_DOF_fluid_20 = make_T_DOF(T_E_fluid_20) ;
 T_DOF_fluid_8  = make_T_DOF(T_E_fluid_8) ;
@@ -640,7 +670,7 @@ T_DOF_volume{1,2} = T_DOF_beam_20 ;
 T_DOF_volume{2,1} = T_DOF_fluid_8 ;
 T_DOF_volume{2,2} = T_DOF_fluid_20 ;
 
-%%%
+% 2D connectivity tables for the 6 outer faces of the solid domain
 
 ls_beam_face1_8 = find((T_X_8(:,1)+Lbeam_x/2==0) & (abs(T_X_8(:,2)-Ly/2)<=Lbeam_y/2)) ;
 ls_beam_face2_8 = find((T_X_8(:,1)-Lbeam_x/2==0) & (abs(T_X_8(:,2)-Ly/2)<=Lbeam_y/2)) ;
@@ -872,11 +902,13 @@ T_E_beam_faces{5,2} = T_E_beam_face5_20 ;
 T_E_beam_faces{6,1} = T_E_beam_face6_8 ;
 T_E_beam_faces{6,2} = T_E_beam_face6_20 ;
 
+% Final 2D connectivity tables
+
 T_E_surface = cell(2,1) ;
 T_E_surface{1,1} = T_E_beam_faces ;
 T_E_surface{2,1} = T_E_fluid_faces ;
 
-%%%
+% Tables of degrees of freedom for the 2D faces
 
 T_DOF_beam_face1_20 = make_T_DOF(T_E_beam_face1_20) ;
 T_DOF_beam_face1_8  = make_T_DOF(T_E_beam_face1_8) ;
@@ -943,7 +975,7 @@ T_DOF_surface = cell(2,1) ;
 T_DOF_surface{1} = T_DOF_beam_faces ;
 T_DOF_surface{2} = T_DOF_fluid_faces ;
                
-%%%
+% Assembling the fsimesh structure
 
 nodelist = cell(2,2) ;
 nodelist{1,1} = nodes_beam_faces_8 ;
@@ -966,8 +998,8 @@ fsimesh.T_DOF_volume = T_DOF_volume ;
 fsimesh.T_DOF_surface = T_DOF_surface ;
 fsimesh.T_DOF_fsi = T_DOF_fsi ;
 
-% Save
+% Saving fsimesh to a .mat file
 
 if isave == 1
-    save('mesh_fsi_1.mat','fsimesh') ;
+    save('testcase_fsimesh.mat','fsimesh') ;
 end
